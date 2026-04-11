@@ -7,33 +7,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  create-release:
+  build-windows:
     runs-on: windows-latest
     
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Setup Rust
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: stable
         targets: x86_64-pc-windows-msvc
     
     - name: Install Tauri CLI
-      run: cargo install tauri-cli --version 2.0.0
+      run: npm install --global @tauri-apps/cli
     
-    - name: Build Release
-      run: |
-        cd src-tauri
-        cargo tauri build --target x86_64-pc-windows-msvc
-    
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          src-tauri/target/x86_64-pc-windows-msvc/release/*.exe
-          src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
-        generate_release_notes: true
+    - name: Build for Windows
+      uses: tauri-apps/tauri-action@v0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        projectPath: ./src-tauri  # ✅ Cargo.toml está em src-tauri/
+        includeDebug: false
+        includeUpdaterJson: false
+        args: --target x86_64-pc-windows-msvc
+    
+    - name: Upload Windows Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: tetrio-optimizer-windows
+        path: |
+          src-tauri/target/x86_64-pc-windows-msvc/release/*.exe
+          src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
