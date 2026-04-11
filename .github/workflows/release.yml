@@ -14,33 +14,23 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-    
-    - name: Install Rust
+    - name: Setup Rust
       uses: dtolnay/rust-toolchain@stable
       with:
+        toolchain: stable
         targets: x86_64-pc-windows-msvc
     
-    - name: Install Tauri CLI
-      run: npm install --global @tauri-apps/cli
+    - name: Install dependencies
+      run: |
+        cargo install tauri-cli --version 2.0.0
     
-    - name: Build for Windows
-      uses: tauri-apps/tauri-action@v0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        projectPath: .
-        includeDebug: false
-        includeUpdaterJson: false
-        args: --target x86_64-pc-windows-msvc
+    - name: Build Tauri App
+      run: |
+        cd src-tauri
+        cargo tauri build --target x86_64-pc-windows-msvc --verbose
     
-    - name: Upload Windows Artifacts
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: tetrio-optimizer-windows
-        path: |
-          src-tauri/target/x86_64-pc-windows-msvc/release/*.exe
-          src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+        path: src-tauri/target/x86_64-pc-windows-msvc/release/bundle/
