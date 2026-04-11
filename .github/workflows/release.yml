@@ -14,18 +14,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20' # Atualizei para a 20 para evitar avisos de depreciação
-
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
       with:
         targets: x86_64-pc-windows-msvc
     
     - name: Install Tauri CLI
-      run: npm install --global @tauri-apps/cli
+      run: cargo install tauri-cli --version 2.0.0-rc # Instala a CLI via Rust, não via NPM
     
     - name: Build for Windows
       uses: tauri-apps/tauri-action@v0
@@ -35,6 +30,8 @@ jobs:
         projectPath: .
         includeDebug: false
         includeUpdaterJson: false
+        # Força o uso do Cargo para evitar o erro de "Missing script tauri"
+        tauriScript: cargo tauri
         args: --target x86_64-pc-windows-msvc
     
     - name: Upload Windows Artifacts
