@@ -176,4 +176,4 @@ Para suporte, abra uma issue no GitHub ou entre em contato via:
 
 ---
 
-**Nota**: Este projeto não é afiliado oficialmente com TETR.IO. É um wrapper de terceiros para melhorar a experiência do usuário.
+**Nota**: Este projeto não é afiliado oficialmente com TETR.IO. É um wrapper de terceiros para melhorar a experiência do usuário.# Cache buster for GitHub Actions
