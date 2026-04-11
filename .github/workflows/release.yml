@@ -14,13 +14,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
       with:
         targets: x86_64-pc-windows-msvc
-    
-    - name: Install Tauri CLI
-      run: cargo install tauri-cli --locked
     
     - name: Build for Windows
       uses: tauri-apps/tauri-action@v0
@@ -29,8 +31,8 @@ jobs:
       with:
         projectPath: .
         includeDebug: false
-        includeUpdaterJson: false
-        tauriScript: cargo tauri
+        # O SEGREDO: Usamos o npx para chamar o Tauri 2.0 sem precisar instalar nada antes
+        tauriScript: npx @tauri-apps/cli
         args: --target x86_64-pc-windows-msvc
     
     - name: Upload Windows Artifacts
