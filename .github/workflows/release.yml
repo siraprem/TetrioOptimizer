@@ -31,7 +31,8 @@ jobs:
       with:
         projectPath: .
         includeDebug: false
-        # O SEGREDO: Usamos o npx para chamar o Tauri 2.0 sem precisar instalar nada antes
+        includeUpdaterJson: false
+        # A MÁGICA: O npx vai baixar a CLI correta do Tauri 2.0 na hora
         tauriScript: npx @tauri-apps/cli
         args: --target x86_64-pc-windows-msvc
     
