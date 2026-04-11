@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -31,8 +31,7 @@ jobs:
       with:
         projectPath: .
         includeDebug: false
-        includeUpdaterJson: false
-        # A MÁGICA: O npx vai baixar a CLI correta do Tauri 2.0 na hora
+        # O npx baixa a CLI correta sem precisar do cargo install que quebrou
         tauriScript: npx @tauri-apps/cli
         args: --target x86_64-pc-windows-msvc
     
