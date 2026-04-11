@@ -20,7 +20,7 @@ jobs:
         targets: x86_64-pc-windows-msvc
     
     - name: Install Tauri CLI
-      run: cargo install tauri-cli --version 2.0.0-rc # Instala a CLI via Rust, não via NPM
+      run: cargo install tauri-cli --locked
     
     - name: Build for Windows
       uses: tauri-apps/tauri-action@v0
@@ -30,7 +30,6 @@ jobs:
         projectPath: .
         includeDebug: false
         includeUpdaterJson: false
-        # Força o uso do Cargo para evitar o erro de "Missing script tauri"
         tauriScript: cargo tauri
         args: --target x86_64-pc-windows-msvc
     
