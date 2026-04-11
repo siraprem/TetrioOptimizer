@@ -1,29 +1,25 @@
 name: Release TETR.IO Optimizer
-
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch:
-
 jobs:
   build-windows:
     runs-on: windows-latest
-    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
       with:
         targets: x86_64-pc-windows-msvc
-    
+    - name: Install Tauri CLI
+      run: npm install -g @tauri-apps/cli
     - name: Build for Windows
       uses: tauri-apps/tauri-action@v0
       env:
@@ -31,10 +27,7 @@ jobs:
       with:
         projectPath: .
         includeDebug: false
-        # O npx baixa a CLI correta sem precisar do cargo install que quebrou
-        tauriScript: npx @tauri-apps/cli
         args: --target x86_64-pc-windows-msvc
-    
     - name: Upload Windows Artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -42,4 +35,3 @@ jobs:
         path: |
           target/x86_64-pc-windows-msvc/release/*.exe
           target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
-          target/release/*.exe
