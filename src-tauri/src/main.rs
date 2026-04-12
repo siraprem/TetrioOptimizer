@@ -18,203 +18,57 @@ fn main() {
             .center()
             .visible(true)
             .resizable(true)
-            .fullscreen(false)
-            .initialization_script(
-                r#"
+            .build()?;
+
+            println!("[TETR.IO Optimizer] ✅ Main window created!");
+            println!("[TETR.IO Optimizer] TETR.IO should now be loading...");
+
+            // ===== SCRIPT DE INICIALIZAÇÃO SIMPLES =====
+            // APENAS VSync menu - SEM ADBLOCK por enquanto
+            let init_script = r#"
                 console.log('[TETR.IO Optimizer] Script loaded - waiting for DOM...');
                 
-                // ===== ADBLOCK INTELIGENTE =====
-                // Bloquear apenas URLs de ANÚNCIOS, não configs do jogo
-                const adKeywords = [
-                    // Google Ads
-                    'googleads', 'doubleclick', 'googlesyndication',
-                    // Analytics/Tracking (não essenciais)
-                    'analytics', 'telemetry', 'tracking', 'beacon',
-                    // Ad networks
-                    'adservice', 'adsystem', 'adserver', 'adnxs',
-                    'facebook.com/tr/', 'scorecardresearch', 'quantserve',
-                    'amazon-adsystem', 'yieldmo', 'rubiconproject',
-                    // Anúncios específicos (NÃO bloquear configs do jogo)
-                    '/ads', '/ad/', 'banner', 'sponsor', 'promo',
-                    'openx.net', 'casalemedia', 'criteo', '3lift.com',
-                    'imasdk.googleapis.com', 'yellowblue.io', 'pubmatic.com'
-                ];
-                
-                // URLs PERMITIDAS (configs do jogo - NÃO BLOQUEAR!)
-                const allowedUrls = [
-                    'pub.network', // USADO PARA CONFIGS DO TETR.IO!
-                    'tetr-io', // Configs específicas do jogo
-                    '/configs', '/fsdata.json' // Configurações do TETR.IO
-                ];
-                
-                // Interceptar fetch
-                const originalFetch = window.fetch;
-                window.fetch = function(...args) {
-                    const url = args[0]?.url || args[0] || '';
-                    if (typeof url === 'string') {
-                        const lowerUrl = url.toLowerCase();
-                        
-                        // Primeiro: verificar se é uma URL permitida (config do jogo)
-                        if (allowedUrls.some(allowed => lowerUrl.includes(allowed))) {
-                            return originalFetch.apply(this, args);
-                        }
-                        
-                        // Segundo: verificar se é um anúncio
-                        if (adKeywords.some(keyword => lowerUrl.includes(keyword))) {
-                            console.log('[Adblock] Blocked fetch:', url.substring(0, 80));
-                            return Promise.reject(new Error('Blocked by TETR.IO Optimizer'));
-                        }
-                    }
-                    return originalFetch.apply(this, args);
-                };
-                
-                // Interceptar XMLHttpRequest
-                const originalXHROpen = XMLHttpRequest.prototype.open;
-                XMLHttpRequest.prototype.open = function(method, url) {
-                    if (typeof url === 'string') {
-                        const lowerUrl = url.toLowerCase();
-                        
-                        // Primeiro: verificar se é uma URL permitida (config do jogo)
-                        if (allowedUrls.some(allowed => lowerUrl.includes(allowed))) {
-                            return originalXHROpen.apply(this, arguments);
-                        }
-                        
-                        // Segundo: verificar se é um anúncio
-                        if (adKeywords.some(keyword => lowerUrl.includes(keyword))) {
-                            console.log('[Adblock] Blocked XHR:', url.substring(0, 80));
-                            this._blocked = true;
-                            return;
-                        }
-                    }
-                    return originalXHROpen.apply(this, arguments);
-                };
-                
-                const originalXHRSend = XMLHttpRequest.prototype.send;
-                XMLHttpRequest.prototype.send = function(body) {
-                    if (this._blocked) {
-                        console.log('[Adblock] Prevented blocked XHR from sending');
-                        return;
-                    }
-                    return originalXHRSend.apply(this, arguments);
-                };
-                
-                console.log('[TETR.IO Optimizer] Adblock active');
-                
-                // ===== REMOÇÃO AGGRESSIVA DE ELEMENTOS DE ANÚNCIO =====
-                function removeAdElements() {
-                    // Remover sticky footer (anúncio embaixo)
-                    const stickyFooter = document.querySelector('[id*="sticky"], [class*="sticky"], [id*="footer"], [class*="footer"]');
-                    if (stickyFooter) {
-                        console.log('[Adblock] Removing sticky footer element');
-                        stickyFooter.remove();
-                    }
-                    
-                    // Remover elementos com classes/id de anúncio
-                    const adSelectors = [
-                        '[id*="ad-"]', '[class*="ad-"]', '[id*="ads"]', '[class*="ads"]',
-                        '[id*="banner"]', '[class*="banner"]', '[id*="sponsor"]', '[class*="sponsor"]',
-                        '[id*="promo"]', '[class*="promo"]', '[id*="commercial"]', '[class*="commercial"]',
-                        'iframe[src*="ads"]', 'iframe[src*="doubleclick"]', 'iframe[src*="googleads"]',
-                        '[id*="rail"]', '[class*="rail"]', // ingame-left_rail, ingame-right_rail
-                        '[id*="ceriad"]', '[class*="ceriad"]' // Elementos do sistema de anúncios
-                    ];
-                    
-                    adSelectors.forEach(selector => {
-                        document.querySelectorAll(selector).forEach(el => {
-                            console.log(`[Adblock] Removing ad element: ${selector}`);
-                            el.remove();
-                        });
-                    });
-                }
-                
-                // Executar remoção periodicamente
-                setInterval(removeAdElements, 1000);
-                
-                // Monitorar mudanças no DOM para remover elementos novos
-                const observer = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        if (mutation.addedNodes.length) {
-                            removeAdElements();
-                        }
-                    });
-                });
-                
-                // ===== FUNÇÕES PRINCIPAIS (executam quando DOM estiver pronto) =====
+                // Função para inicializar quando DOM estiver pronto
                 function initOptimizer() {
                     console.log('[TETR.IO Optimizer] DOM ready, initializing...');
                     
-                    // Observar o body quando estiver disponível
-                    if (document.body) {
-                        observer.observe(document.body, {
-                            childList: true,
-                            subtree: true
-                        });
-                    }
-                    
-                    // Teste - criar elemento vermelho (com retry se body não existir)
-                    function addTestElement() {
-                        if (!document.body) {
-                            console.log('[TETR.IO Optimizer] Body not ready, retrying...');
-                            setTimeout(addTestElement, 100);
-                            return;
-                        }
-                        
-                        const testDiv = document.createElement('div');
-                        testDiv.textContent = 'TETR.IO Optimizer LOADED!';
-                        testDiv.style.cssText = 'position:fixed;top:10px;left:10px;background:red;color:white;padding:10px;z-index:999999;font-size:16px;font-weight:bold;';
-                        document.body.appendChild(testDiv);
-                        
-                        console.log('[TETR.IO Optimizer] ✅ Test element added!');
-                        
-                        // Remover após 10 segundos
-                        setTimeout(() => {
-                            if (testDiv.parentNode) {
-                                testDiv.remove();
-                                console.log('[TETR.IO Optimizer] Test element removed');
-                            }
-                        }, 10000);
-                    }
-                    
-                    addTestElement();
-                    
-                    // ===== MENU VSYNC (F4) =====
+                    // ===== VSYNC MENU =====
                     let vsyncMenu = null;
                     let currentVSync = 120; // Valor padrão
                     
+                    // Criar menu VSync
                     function createVSyncMenu() {
-                        if (vsyncMenu) return;
-                        
                         vsyncMenu = document.createElement('div');
+                        vsyncMenu.id = 'tetrio-vsync-menu';
                         vsyncMenu.style.cssText = `
                             position: fixed;
-                            top: 50px;
+                            top: 20px;
                             right: 20px;
-                            background: #1a1a1a;
+                            background: rgba(0, 0, 0, 0.85);
                             color: white;
                             padding: 15px;
                             border-radius: 8px;
                             z-index: 999999;
                             font-family: Arial, sans-serif;
-                            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-                            min-width: 200px;
+                            font-size: 14px;
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                            display: none;
+                            min-width: 180px;
                         `;
                         
                         vsyncMenu.innerHTML = `
-                            <div style="margin-bottom: 10px; font-weight: bold; color: #4CAF50;">
-                                🎮 VSync Control
+                            <div style="margin-bottom: 10px; font-weight: bold; border-bottom: 1px solid #444; padding-bottom: 5px;">
+                                VSync Settings
                             </div>
-                            <div style="margin-bottom: 10px; font-size: 12px; color: #aaa;">
-                                Current: <span id="current-vsync">${currentVSync} Hz</span>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <button data-hz="60" style="padding: 8px; background: #333; border: 1px solid #555; color: #ccc; border-radius: 4px; cursor: pointer;">60 Hz</button>
+                                <button data-hz="75" style="padding: 8px; background: #333; border: 1px solid #555; color: #ccc; border-radius: 4px; cursor: pointer;">75 Hz</button>
+                                <button data-hz="120" style="padding: 8px; background: #2a5; border: 1px solid #3c6; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">120 Hz</button>
+                                <button data-hz="144" style="padding: 8px; background: #333; border: 1px solid #555; color: #ccc; border-radius: 4px; cursor: pointer;">144 Hz</button>
+                                <button data-hz="165" style="padding: 8px; background: #333; border: 1px solid #555; color: #ccc; border-radius: 4px; cursor: pointer;">165 Hz</button>
+                                <button data-hz="240" style="padding: 8px; background: #333; border: 1px solid #555; color: #ccc; border-radius: 4px; cursor: pointer;">240 Hz</button>
                             </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-                                <button data-hz="60" style="padding: 8px; background: #333; border: none; color: white; border-radius: 4px; cursor: pointer;">60 Hz</button>
-                                <button data-hz="75" style="padding: 8px; background: #333; border: none; color: white; border-radius: 4px; cursor: pointer;">75 Hz</button>
-                                <button data-hz="120" style="padding: 8px; background: #4CAF50; border: none; color: white; border-radius: 4px; cursor: pointer;">120 Hz</button>
-                                <button data-hz="144" style="padding: 8px; background: #333; border: none; color: white; border-radius: 4px; cursor: pointer;">144 Hz</button>
-                                <button data-hz="165" style="padding: 8px; background: #333; border: none; color: white; border-radius: 4px; cursor: pointer;">165 Hz</button>
-                                <button data-hz="240" style="padding: 8px; background: #333; border: none; color: white; border-radius: 4px; cursor: pointer;">240 Hz</button>
-                            </div>
-                            <div style="margin-top: 10px; font-size: 11px; color: #888; text-align: center;">
+                            <div style="margin-top: 10px; font-size: 12px; color: #aaa; text-align: center;">
                                 Press F4 to toggle
                             </div>
                         `;
@@ -223,55 +77,99 @@ fn main() {
                         
                         // Adicionar event listeners aos botões
                         vsyncMenu.querySelectorAll('button').forEach(btn => {
-                            btn.addEventListener('click', (e) => {
-                                const hz = parseInt(e.target.dataset.hz);
-                                currentVSync = hz;
-                                document.getElementById('current-vsync').textContent = `${hz} Hz`;
-                                
-                                // Atualizar cores dos botões
-                                vsyncMenu.querySelectorAll('button').forEach(b => {
-                                    b.style.background = b.dataset.hz == hz ? '#4CAF50' : '#333';
-                                });
-                                
-                                console.log(`[VSync] Set to ${hz} Hz`);
-                                console.log(`[VSync] Applied ${hz} Hz (placeholder)`);
+                            btn.addEventListener('click', function() {
+                                const hz = parseInt(this.getAttribute('data-hz'));
+                                setVSync(hz);
                             });
                         });
                     }
                     
-                    function toggleVSyncMenu() {
-                        if (!vsyncMenu) {
-                            createVSyncMenu();
-                        } else {
-                            vsyncMenu.style.display = vsyncMenu.style.display === 'none' ? 'block' : 'none';
+                    // Definir VSync
+                    function setVSync(hz) {
+                        console.log('[VSync] Set to', hz, 'Hz');
+                        currentVSync = hz;
+                        
+                        // Atualizar UI
+                        if (vsyncMenu) {
+                            vsyncMenu.querySelectorAll('button').forEach(btn => {
+                                const btnHz = parseInt(btn.getAttribute('data-hz'));
+                                if (btnHz === hz) {
+                                    btn.style.background = '#2a5';
+                                    btn.style.border = '1px solid #3c6';
+                                    btn.style.color = 'white';
+                                    btn.style.fontWeight = 'bold';
+                                } else {
+                                    btn.style.background = '#333';
+                                    btn.style.border = '1px solid #555';
+                                    btn.style.color = '#ccc';
+                                    btn.style.fontWeight = 'normal';
+                                }
+                            });
                         }
-                        console.log('[VSync] Menu toggled');
+                        
+                        // Aplicar VSync (placeholder - precisa do comando Rust)
+                        console.log('[VSync] Applied', hz, 'Hz (placeholder)');
+                    }
+                    
+                    // Toggle menu com F4
+                    function toggleVSyncMenu() {
+                        if (!vsyncMenu) createVSyncMenu();
+                        
+                        const isVisible = vsyncMenu.style.display === 'block';
+                        vsyncMenu.style.display = isVisible ? 'none' : 'block';
+                        console.log('[VSync] Menu toggled', { visible: !isVisible });
                     }
                     
                     // Event listener para F4
-                    document.addEventListener('keydown', (e) => {
-                        if (e.key === 'F4' || e.key === 'f4') {
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'F4') {
                             e.preventDefault();
-                            e.stopPropagation();
                             toggleVSyncMenu();
                         }
-                    }, true);
+                    });
                     
+                    // Criar menu inicialmente oculto
+                    createVSyncMenu();
                     console.log('[TETR.IO Optimizer] VSync menu ready (F4 to toggle)');
+                    
+                    // ===== ELEMENTO DE TESTE =====
+                    // Apenas para confirmar que o script está funcionando
+                    const testElement = document.createElement('div');
+                    testElement.id = 'tetrio-optimizer-test';
+                    testElement.style.cssText = `
+                        position: fixed;
+                        top: 10px;
+                        left: 10px;
+                        background: #f00;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 4px;
+                        font-family: Arial, sans-serif;
+                        font-size: 12px;
+                        z-index: 999999;
+                    `;
+                    testElement.textContent = 'TETR.IO Optimizer LOADED!';
+                    document.body.appendChild(testElement);
+                    
+                    // Remover após 5 segundos
+                    setTimeout(() => {
+                        if (testElement.parentNode) {
+                            testElement.remove();
+                            console.log('[TETR.IO Optimizer] Test element removed');
+                        }
+                    }, 5000);
                 }
                 
-                // Esperar DOM estar pronto
+                // Aguardar DOM estar pronto
                 if (document.readyState === 'loading') {
                     document.addEventListener('DOMContentLoaded', initOptimizer);
                 } else {
                     initOptimizer();
                 }
-                "#
-            )
-            .build()?;
+            "#;
 
-            println!("[TETR.IO Optimizer] ✅ Main window created!");
-            println!("[TETR.IO Optimizer] TETR.IO should now be loading...");
+            // Injetar script
+            window.eval(&init_script).unwrap();
 
             Ok(())
         })
