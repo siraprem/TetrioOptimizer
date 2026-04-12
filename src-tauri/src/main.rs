@@ -1,17 +1,11 @@
 use tauri::{Manager, WebviewUrl, WebviewWindowBuilder};
-use tracing::info;
 
 fn main() {
-    // Configurar logging
-    tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::INFO)
-        .init();
-
-    info!("[TETR.IO Optimizer] Starting...");
+    println!("[TETR.IO Optimizer] Starting...");
 
     tauri::Builder::default()
         .setup(|app| {
-            info!("[TETR.IO Optimizer] App setup started");
+            println!("[TETR.IO Optimizer] App setup started");
 
             // Criar janela principal
             let window = WebviewWindowBuilder::new(
@@ -251,8 +245,8 @@ fn main() {
             )
             .build()?;
 
-            info!("[TETR.IO Optimizer] ✅ Main window created!");
-            info!("[TETR.IO Optimizer] TETR.IO should now be loading...");
+            println!("[TETR.IO Optimizer] ✅ Main window created!");
+            println!("[TETR.IO Optimizer] TETR.IO should now be loading...");
 
             Ok(())
         })

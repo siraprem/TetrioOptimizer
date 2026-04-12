@@ -9,19 +9,6 @@
   },
   "app": {
     "withGlobalTauri": false,
-    "windows": [
-      {
-        "label": "main",
-        "title": "TETR.IO Ultra Optimized",
-        "url": "https://tetr.io",
-        "width": 1280,
-        "height": 720,
-        "center": true,
-        "visible": true,
-        "resizable": true,
-        "fullscreen": false,
-        "devtools": false
-      }
-    ]
+    "windows": []
   }
 }
