@@ -1,0 +1,23 @@
+[package]
+name = "tetrio-optimizer"
+version = "0.2.0"
+description = "TETR.IO Optimizer - Performance enhancements for TETR.IO"
+authors = ["You"]
+license = "MIT"
+repository = ""
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2.5.6" }
+
+[dependencies]
+tauri = { version = "2.10.3", features = ["devtools"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+sysinfo = "0.30"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

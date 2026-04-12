@@ -1,0 +1,27 @@
+{
+  "productName": "tetrio-optimizer",
+  "version": "0.2.0",
+  "identifier": "com.tetrio.optimizer",
+  "build": {
+    "devUrl": "https://tetr.io",
+    "beforeDevCommand": "",
+    "beforeBuildCommand": ""
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "TETR.IO Ultra Optimized",
+        "url": "https://tetr.io",
+        "width": 1280,
+        "height": 720,
+        "center": true,
+        "visible": true,
+        "resizable": true,
+        "fullscreen": false,
+        "devtools": false
+      }
+    ]
+  }
+}
