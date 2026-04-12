@@ -169,7 +169,7 @@ fn main() {
             "#;
 
             // Injetar script
-            window.eval(&init_script).unwrap();
+            window.eval(&*init_script).unwrap();
 
             Ok(())
         })
