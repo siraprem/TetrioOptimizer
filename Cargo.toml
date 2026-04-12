@@ -1,24 +1,12 @@
+[workspace]
+members = ["src-tauri"]
+resolver = "2"
+
 [package]
-name = "tetrio-optimizer"
+name = "tetrio-optimizer-workspace"
 version = "0.1.0"
 edition = "2021"
-authors = ["siraprem"]
-description = "TETR.IO Ultra Optimized Wrapper"
-license = "MIT"
-repository = "https://github.com/siraprem/TetrioOptimizer"
 
-[dependencies]
-tauri = { version = "2.0.0", features = ["shell-open", "process-relaunch-dangerous-allow-symlink-macos"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-log = "0.4"
-env_logger = "0.11"
-
-[build-dependencies]
-tauri-build = { version = "2.0.0" }
-
-[profile.release]
-opt-level = 3
-lto = true
-codegen-units = 1
-panic = "abort"
+[[bin]]
+name = "tetrio-optimizer"
+path = "src-tauri/src/main.rs"

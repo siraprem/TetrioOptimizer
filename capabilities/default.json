@@ -1,0 +1,8 @@
+{
+  "identifier": "main-window",
+  "description": "Capability for the main TETR.IO window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default"
+  ]
+}

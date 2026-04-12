@@ -1,1 +1,1 @@
-{}
+{"main-window":{"identifier":"main-window","description":"Capability for the main TETR.IO window","local":true,"windows":["main"],"permissions":["core:default"]}}

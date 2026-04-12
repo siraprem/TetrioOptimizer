@@ -1,179 +1,196 @@
-# TETR.IO Optimizer
+# TETR.IO Ultra Optimized Wrapper
 
-Um wrapper ultra-otimizado para TETR.IO construído com Rust e Tauri, projetado para superar a performance do cliente oficial e do navegador.
+A high-performance wrapper for TETR.IO with integrated adblocker, VSync configuration, and WebGL optimizations.
 
-## 🚀 Características
+## ✨ Features
 
-### 🎯 Otimizações de Performance
-- **Hardware Acceleration Agressiva**: Configurações maximizadas para GPU
-- **WebGL Ultra-Otimizado**: Flags específicas para jogos WebGL como TETR.IO
-- **Gerenciamento de Memória Inteligente**: Limpeza periódica de cache da WebView
-- **VSync Desabilitado**: FPS ilimitado para responsividade máxima
-- **Zero-Copy Buffers**: Redução de overhead de memória
+### 🛡️ Integrated Adblocker
+- **Automatic ad removal**: Blocks and removes advertising elements from TETR.IO
+- **Request blocking**: Intercepts and blocks requests to advertising domains
+- **Dynamic detection**: Continuously monitors for new ad elements
+- **Performance boost**: Reduces CPU/GPU usage by eliminating ad rendering
 
-### 🛠️ Funcionalidades Técnicas
-- **Compatibilidade Multiplataforma**: Windows e Linux (macOS em desenvolvimento)
-- **Cache Management Automático**: Limpeza a cada 5 minutos
-- **Monitoramento de Sistema**: Informações em tempo real sobre CPU, GPU e memória
-- **Fallback Systems**: Degradação graciosa para sistemas menos potentes
-- **WebGL 2.0 Compute**: Suporte a recursos avançados de GPU
+### ⚙️ VSync Configuration Wizard
+- **Mandatory setup**: VSync configuration is required before game launch
+- **Standard rates**: Predefined options (60, 75, 120, 144, 165, 240 Hz)
+- **Custom values**: Support for custom refresh rates with safety warnings
+- **Frame rate limiting**: Ensures stable performance matching selected VSync
 
-### ⚙️ Flags de Otimização WebGL
-- `--disable-gpu-vsync`: FPS ilimitado
-- `--enable-webgl2-compute-context`: Computação WebGL 2.0
-- `--enable-gpu-rasterization`: Rasterização por GPU
-- `--enable-zero-copy`: Buffers zero-copy
-- `--disable-software-rasterizer`: Sem fallback de software
-- `--max-active-webgl-contexts=16`: Mais contextos WebGL
-- `--disable-frame-rate-limit`: Sem limite de FPS
+### 🚀 Performance Optimizations
+- **WebGL enhancements**: Optimized rendering pipeline for smoother gameplay
+- **Memory management**: Intelligent cache cleaning and memory optimization
+- **System compatibility**: Cross-platform stability improvements
+- **User-Agent spoofing**: Ensures compatibility with TETR.IO
 
-## 📦 Instalação
+## 🚀 Installation
 
-### Pré-requisitos
-- Rust 1.70+ (`rustup install stable`)
-- Node.js 18+ (para desenvolvimento)
-- Dependências do sistema:
-  - **Linux**: `libwebkit2gtk-4.0-37`, `libgtk-3-0`, `libayatana-appindicator3-1`
-  - **Windows**: WebView2 Runtime (instalado automaticamente)
+### Prerequisites
+- Rust (latest stable)
+- Node.js 18+ (for Tauri dependencies)
+- System dependencies for Tauri (see [Tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites))
 
-### Build Local
+### Build from Source
+
 ```bash
-# Clone o repositório
-git clone https://github.com/seu-usuario/tetrio-optimizer.git
-cd tetrio-optimizer
+# Clone the repository
+git clone https://github.com/siraprem/TetrioOptimizer.git
+cd TetrioOptimizer
 
-# Build em modo release (otimizado)
-cargo tauri build --release
+# Install dependencies
+npm install
 
-# O executável estará em:
-# Linux: ./target/release/tetrio-optimizer
-# Windows: ./target/release/tetrio-optimizer.exe
+# Build the application
+cd src-tauri
+cargo build --release
 ```
 
-### Desenvolvimento
+### Development
+
 ```bash
-# Modo desenvolvimento
-cargo tauri dev
+# Run in development mode
+npm run tauri dev
 
-# Build para produção
-cargo tauri build
+# Build for production
+npm run tauri build
 ```
 
-## 🎮 Uso
+## 🎮 Usage
 
-1. Execute o aplicativo
-2. O TETR.IO carregará automaticamente
-3. Use `Ctrl+Shift+I` para abrir DevTools (se habilitado)
-4. O cache será limpo automaticamente a cada 5 minutos
+1. **Launch the application**
+2. **VSync Configuration** (mandatory first step):
+   - Select your monitor's refresh rate from the dropdown
+   - Or enter a custom value (with caution)
+   - Click "Confirm & Launch Game"
 
-### Comandos Disponíveis
-- **Limpar Cache Manualmente**: Botão na interface ou comando `clean_memory_cache()`
-- **Otimizar WebGL**: Aplicação automática de flags na inicialização
-- **Informações do Sistema**: `get_system_info()` via console
+3. **Game Launch**:
+   - The main TETR.IO window opens with optimal settings
+   - Adblocker automatically activates
+   - VSync is applied for smooth gameplay
 
-## 🏗️ Arquitetura
+4. **Performance Controls**:
+   - Use system tray menu for quick actions
+   - Access optimization settings
+   - Monitor system performance
+
+## 🔧 Technical Details
+
+### Adblocker Implementation
+- **Script injection**: JavaScript injected via Tauri's webview API
+- **DOM monitoring**: MutationObserver detects and removes new ad elements
+- **Request interception**: Overrides fetch() and XMLHttpRequest
+- **Selective blocking**: Targets known ad domains and patterns
+
+### VSync System
+- **State management**: Rust backend stores VSync configuration
+- **Frame limiting**: JavaScript-based frame rate control
+- **Window coordination**: Setup window must complete before main window
+- **Validation**: Input validation for safe custom values
+
+### Performance Features
+- **WebGL flags**: Optimized Chrome/WebKit rendering flags
+- **Memory optimization**: Automatic and manual cache management
+- **Platform-specific**: Linux stability improvements
+- **Persistent storage**: Game data saved locally
+
+## 📁 Project Structure
 
 ```
-src/
-├── main.rs              # Ponto de entrada principal
-├── memory_manager.rs    # Gerenciamento de cache e memória
-└── webgl_optimizer.rs   # Otimizações WebGL específicas
+TetrioOptimizer/
+├── src-tauri/
+│   ├── src/
+│   │   ├── main.rs          # Main application logic
+│   │   ├── memory_manager.rs # Memory optimization
+│   │   └── webgl_optimizer.rs # WebGL enhancements
+│   ├── adblocker.js         # Adblocker script
+│   ├── setup.html           # VSync configuration UI
+│   └── build.rs             # Build configuration
+├── tauri.conf.json          # Tauri configuration
+├── Cargo.toml              # Rust dependencies
+├── package.json            # Node.js dependencies
+└── README.md               # This file
 ```
 
-### Módulos Principais
+## 🛠️ Configuration
 
-#### MemoryManager
-- Limpeza periódica de cache (5 minutos)
-- Platform-specific cache cleaning
-- DNS cache flushing
-- Memory usage monitoring
+### Customizing Adblocker
+Edit `src-tauri/adblocker.js` to:
+- Add/remove ad domains
+- Modify CSS selectors for ad elements
+- Adjust detection sensitivity
 
-#### WebGLOptimizer
-- 20+ flags de otimização WebGL
-- Configurações específicas para TETR.IO
-- Fallback para sistemas menos potentes
-- Hardware detection and optimization
+### VSync Settings
+Modify `src-tauri/src/main.rs` to:
+- Change default VSync options
+- Adjust frame limiting behavior
+- Modify validation rules
 
-## ⚡ Performance Gains
+## 🤝 Contributing
 
-### Comparativo Esperado
-| Métrica | Navegador | TETR.IO Optimizer | Ganho |
-|---------|-----------|-------------------|-------|
-| FPS Máximo | 60-144 | Ilimitado | +100%+ |
-| Latência de Input | 16-32ms | 4-8ms | -75% |
-| Uso de Memória | 500-800MB | 300-500MB | -40% |
-| Load Time | 3-5s | 1-2s | -60% |
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-### Hardware Acceleration
-- GPU rasterization ativada
-- Zero-copy buffers habilitados
-- WebGL 2.0 Compute context
-- Parallel downloading
-- Canvas out-of-process rasterization
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## ⚠️ Disclaimer
+
+This project is not affiliated with TETR.IO or osk. It is a third-party wrapper that provides additional features and optimizations. Use at your own risk.
 
 ## 🐛 Troubleshooting
 
-### Problemas Comuns
+### Common Issues
 
-1. **Falha na inicialização do WebView2 (Windows)**
-   ```bash
-   # Instalar WebView2 Runtime manualmente
-   winget install Microsoft.EdgeWebView2Runtime
-   ```
-
-2. **Dependências faltando (Linux)**
-   ```bash
-   # Ubuntu/Debian
-   sudo apt install libwebkit2gtk-4.0-37 libgtk-3-0 libayatana-appindicator3-1
-
-   # Arch Linux
-   sudo pacman -S webkit2gtk gtk3 libayatana-appindicator
-   ```
-
-3. **Performance abaixo do esperado**
-   - Verifique se a GPU está sendo detectada
-   - Confirme que hardware acceleration está ativada
-   - Limpe o cache manualmente
-
-### Logs e Debug
+**Build fails on Linux:**
 ```bash
-# Executar com logs detalhados
-RUST_LOG=info cargo run --release
-
-# Logs do Tauri
-TAURI_LOG=info cargo tauri dev
+# Install required system dependencies
+sudo apt-get update
+sudo apt-get install libwebkit2gtk-4.1-dev \
+    build-essential \
+    curl \
+    wget \
+    libssl-dev \
+    libgtk-3-dev \
+    libayatana-appindicator3-dev \
+    librsvg2-dev
 ```
 
-## 🤝 Contribuindo
+**Adblocker not working:**
+- Check browser console for errors
+- Verify script injection in main.rs
+- Update ad selectors in adblocker.js
 
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+**VSync configuration not saving:**
+- Check file permissions for data directory
+- Verify state management in AppState
+- Ensure proper window event handling
 
-### Guidelines
-- Siga o [Rust Style Guide](https://github.com/rust-dev-tools/fmt-rfcs/blob/master/guide/guide.md)
-- Use `cargo fmt` e `cargo clippy` antes de commitar
-- Adicione testes para novas funcionalidades
-- Documente mudanças na API
+### Debug Mode
 
-## 📄 Licença
+Enable detailed logging:
+```bash
+RUST_LOG=debug npm run tauri dev
+```
 
-Distribuído sob licença MIT. Veja `LICENSE` para mais informações.
+## 🔄 Changelog
 
-## 🙏 Agradecimentos
+### v0.2.0 (Current)
+- Added integrated adblocker
+- Implemented VSync configuration wizard
+- Improved window management
+- Enhanced performance optimizations
+- Added custom VSync value support
 
-- [Tauri](https://tauri.app/) - Framework para aplicativos desktop
-- [TETR.IO](https://tetr.io/) - Incrível jogo de Tetris online
-- Comunidade Rust - Suporte e ferramentas incríveis
+### v0.1.0
+- Initial release
+- Basic TETR.IO wrapper
+- WebGL optimizations
+- Memory management
+- Cross-platform support
 
-## 📞 Suporte
+## 📞 Support
 
-Para suporte, abra uma issue no GitHub ou entre em contato via:
-- Email: suporte@tetrio-optimizer.com
-- Discord: [Servidor da Comunidade](https://discord.gg/example)
-
----
-
-**Nota**: Este projeto não é afiliado oficialmente com TETR.IO. É um wrapper de terceiros para melhorar a experiência do usuário.# Cache buster for GitHub Actions
+For issues and feature requests, please use the [GitHub Issues](https://github.com/siraprem/TetrioOptimizer/issues) page.

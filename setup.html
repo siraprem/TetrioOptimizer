@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TETR.IO Optimizer - VSync Setup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(25, 25, 35, 0.95);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #00dbde 0%, #fc00ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            color: #a0a0c0;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: #ffc107;
+        }
+        
+        .warning strong {
+            color: #ff9800;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #e0e0ff;
+            font-size: 1.1rem;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(40, 40, 60, 0.8);
+            border: 2px solid rgba(100, 100, 150, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #00dbde;
+            box-shadow: 0 0 0 3px rgba(0, 219, 222, 0.2);
+        }
+        
+        select option {
+            background: #28283c;
+            color: #fff;
+            padding: 10px;
+        }
+        
+        .custom-input {
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .custom-input.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .custom-warning {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #f44336;
+            display: none;
+        }
+        
+        .custom-warning.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .info-box {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: #2196f3;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .confirm-btn {
+            background: linear-gradient(90deg, #00dbde 0%, #0099ff 100%);
+            color: white;
+        }
+        
+        .confirm-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 219, 222, 0.3);
+        }
+        
+        .confirm-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .cancel-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #a0a0c0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .cancel-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .footer a {
+            color: #00dbde;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">TETR.IO OPTIMIZER</div>
+            <div class="subtitle">VSync Configuration Required</div>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠ IMPORTANT:</strong> VSync configuration is mandatory for optimal game stability and performance. This setting cannot be skipped.
+        </div>
+        
+        <div class="form-group">
+            <label for="vsync-select">Select VSync Rate</label>
+            <select id="vsync-select">
+                <option value="">-- Please select a VSync rate --</option>
+                <option value="60">60 Hz (Standard)</option>
+                <option value="75">75 Hz</option>
+                <option value="120">120 Hz (Recommended)</option>
+                <option value="144">144 Hz (Gaming)</option>
+                <option value="165">165 Hz (High Refresh)</option>
+                <option value="240">240 Hz (Competitive)</option>
+                <option value="custom">Custom Value...</option>
+            </select>
+            
+            <div id="custom-input" class="custom-input">
+                <input type="number" id="custom-value" placeholder="Enter custom Hz value (e.g., 90)" min="30" max="360" step="1">
+                <div id="custom-warning" class="custom-warning">
+                    ⚠ Custom values may cause instability. Use only if you know what you're doing!
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            💡 <strong>Tip:</strong> Match your VSync rate to your monitor's refresh rate for the smoothest experience. Incorrect settings may cause screen tearing or stuttering.
+        </div>
+        
+        <div class="button-group">
+            <button id="cancel-btn" class="cancel-btn">Cancel</button>
+            <button id="confirm-btn" class="confirm-btn" disabled>Confirm & Launch Game</button>
+        </div>
+        
+        <div class="footer">
+            TETR.IO Optimizer v0.2.0 | <a href="#" id="adblock-info">Adblocker: Active</a>
+        </div>
+    </div>
+
+    <script>
+        const vsyncSelect = document.getElementById('vsync-select');
+        const customInput = document.getElementById('custom-input');
+        const customValue = document.getElementById('custom-value');
+        const customWarning = document.getElementById('custom-warning');
+        const confirmBtn = document.getElementById('confirm-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const adblockInfo = document.getElementById('adblock-info');
+        
+        // Standard VSync values
+        const standardValues = [60, 75, 120, 144, 165, 240];
+        
+        // Handle VSync selection change
+        vsyncSelect.addEventListener('change', function() {
+            const value = this.value;
+            
+            // Show/hide custom input
+            if (value === 'custom') {
+                customInput.classList.add('active');
+                customWarning.classList.add('active');
+                confirmBtn.disabled = true;
+            } else {
+                customInput.classList.remove('active');
+                customWarning.classList.remove('active');
+                confirmBtn.disabled = !value;
+            }
+        });
+        
+        // Handle custom value input
+        customValue.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            const isValid = !isNaN(value) && value >= 30 && value <= 360;
+            
+            // Validate custom value
+            if (isValid) {
+                confirmBtn.disabled = false;
+                customWarning.style.borderColor = 'rgba(76, 175, 80, 0.3)';
+                customWarning.style.color = '#4caf50';
+                customWarning.innerHTML = '✓ Custom value accepted. Proceed with caution.';
+            } else {
+                confirmBtn.disabled = true;
+                customWarning.style.borderColor = 'rgba(244, 67, 54, 0.3)';
+                customWarning.style.color = '#f44336';
+                customWarning.innerHTML = '⚠ Invalid value! Must be between 30 and 360 Hz.';
+            }
+        });
+        
+        // Handle confirm button click
+        confirmBtn.addEventListener('click', async function() {
+            let vsyncValue;
+            
+            if (vsyncSelect.value === 'custom') {
+                vsyncValue = parseInt(customValue.value);
+                if (isNaN(vsyncValue) || vsyncValue < 30 || vsyncValue > 360) {
+                    alert('Invalid custom value! Please enter a value between 30 and 360 Hz.');
+                    return;
+                }
+            } else {
+                vsyncValue = parseInt(vsyncSelect.value);
+            }
+            
+            // Disable button and show loading state
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = 'Applying VSync...';
+            
+            try {
+                // 1. Armazenar valor no estado global
+                const setResponse = await window.__TAURI__.core.invoke('set_vsync', { value: vsyncValue });
+                
+                if (!setResponse.success) {
+                    throw new Error(setResponse.error || 'Failed to set VSync');
+                }
+                
+                // 2. Aplicar VSync na janela principal em tempo real
+                const mainWindow = window.__TAURI__.window.getWindow('main');
+                if (mainWindow) {
+                    await window.__TAURI__.core.invoke('apply_vsync_to_window', { 
+                        window: mainWindow,
+                        value: vsyncValue 
+                    });
+                }
+                
+                // 3. Fechar janela de setup
+                await window.__TAURI__.window.getCurrent().close();
+                
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = 'Confirm & Launch Game';
+            }
+        });
+        
+        // Handle cancel button click
+        cancelBtn.addEventListener('click', async function() {
+            const confirmed = confirm('Are you sure you want to cancel? The game requires VSync configuration to run.');
+            if (confirmed) {
+                await window.__TAURI__.app.exit();
+            }
+        });
+        
+        // Adblocker info
+        adblockInfo.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Adblocker Status: ACTIVE\n\n• Blocks advertising domains\n• Removes ad elements from TETR.IO\n• Improves performance and reduces distractions');
+        });
+        
+        // Prevent form submission
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && confirmBtn.disabled) {
+                e.preventDefault();
+            }
+        });
+        
+        // Initialize
+        console.log('TETR.IO Optimizer Setup initialized');
+        
+        // Setup window is created visible by main process
+        console.log('Setup window created and visible');
+    </script>
+</body>
+</html>
