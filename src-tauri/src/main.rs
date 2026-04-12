@@ -40,10 +40,11 @@ fn main() {
                     'imasdk.googleapis.com', 'yellowblue.io', 'pubmatic.com'
                 ];
                 
-                // URLs PERMITIDAS (configs do jogo)
+                // URLs PERMITIDAS (configs do jogo - NÃO BLOQUEAR!)
                 const allowedUrls = [
-                    '/configs', '/fsdata.json', // Configurações do TETR.IO
-                    'tetr-io' // Configs específicas do jogo
+                    'pub.network', // USADO PARA CONFIGS DO TETR.IO!
+                    'tetr-io', // Configs específicas do jogo
+                    '/configs', '/fsdata.json' // Configurações do TETR.IO
                 ];
                 
                 // Interceptar fetch
@@ -52,7 +53,14 @@ fn main() {
                     const url = args[0]?.url || args[0] || '';
                     if (typeof url === 'string') {
                         const lowerUrl = url.toLowerCase();
-                        if (adDomains.some(domain => lowerUrl.includes(domain))) {
+                        
+                        // Primeiro: verificar se é uma URL permitida (config do jogo)
+                        if (allowedUrls.some(allowed => lowerUrl.includes(allowed))) {
+                            return originalFetch.apply(this, args);
+                        }
+                        
+                        // Segundo: verificar se é um anúncio
+                        if (adKeywords.some(keyword => lowerUrl.includes(keyword))) {
                             console.log('[Adblock] Blocked fetch:', url.substring(0, 80));
                             return Promise.reject(new Error('Blocked by TETR.IO Optimizer'));
                         }
@@ -65,7 +73,14 @@ fn main() {
                 XMLHttpRequest.prototype.open = function(method, url) {
                     if (typeof url === 'string') {
                         const lowerUrl = url.toLowerCase();
-                        if (adDomains.some(domain => lowerUrl.includes(domain))) {
+                        
+                        // Primeiro: verificar se é uma URL permitida (config do jogo)
+                        if (allowedUrls.some(allowed => lowerUrl.includes(allowed))) {
+                            return originalXHROpen.apply(this, arguments);
+                        }
+                        
+                        // Segundo: verificar se é um anúncio
+                        if (adKeywords.some(keyword => lowerUrl.includes(keyword))) {
                             console.log('[Adblock] Blocked XHR:', url.substring(0, 80));
                             this._blocked = true;
                             return;
