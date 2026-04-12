@@ -37,10 +37,12 @@ fn main() {
                     'facebook.com/tr/', 'scorecardresearch', 'quantserve',
                     'amazon-adsystem', 'yieldmo', 'rubiconproject',
                     'pub.network', 'confiant', 'optimise', 'floors.dev',
-                    'btloader', 'freestar', 'ceriad', 'darkside'
+                    'btloader', 'freestar', 'ceriad', 'darkside',
+                    'openx.net', 'casalemedia', 'criteo', '3lift.com',
+                    'imasdk.googleapis.com', 'yellowblue.io', 'pubmatic.com'
                 ];
                 
-                // Interceptar fetch (executa imediatamente, não precisa de DOM)
+                // Interceptar fetch
                 const originalFetch = window.fetch;
                 window.fetch = function(...args) {
                     const url = args[0]?.url || args[0] || '';
@@ -54,7 +56,7 @@ fn main() {
                     return originalFetch.apply(this, args);
                 };
                 
-                // Interceptar XMLHttpRequest (executa imediatamente)
+                // Interceptar XMLHttpRequest
                 const originalXHROpen = XMLHttpRequest.prototype.open;
                 XMLHttpRequest.prototype.open = function(method, url) {
                     if (typeof url === 'string') {
@@ -93,7 +95,9 @@ fn main() {
                         '[id*="ad-"]', '[class*="ad-"]', '[id*="ads"]', '[class*="ads"]',
                         '[id*="banner"]', '[class*="banner"]', '[id*="sponsor"]', '[class*="sponsor"]',
                         '[id*="promo"]', '[class*="promo"]', '[id*="commercial"]', '[class*="commercial"]',
-                        'iframe[src*="ads"]', 'iframe[src*="doubleclick"]', 'iframe[src*="googleads"]'
+                        'iframe[src*="ads"]', 'iframe[src*="doubleclick"]', 'iframe[src*="googleads"]',
+                        '[id*="rail"]', '[class*="rail"]', // ingame-left_rail, ingame-right_rail
+                        '[id*="ceriad"]', '[class*="ceriad"]' // Elementos do sistema de anúncios
                     ];
                     
                     adSelectors.forEach(selector => {
@@ -116,14 +120,17 @@ fn main() {
                     });
                 });
                 
-                observer.observe(document.body, {
-                    childList: true,
-                    subtree: true
-                });
-                
                 // ===== FUNÇÕES PRINCIPAIS (executam quando DOM estiver pronto) =====
                 function initOptimizer() {
                     console.log('[TETR.IO Optimizer] DOM ready, initializing...');
+                    
+                    // Observar o body quando estiver disponível
+                    if (document.body) {
+                        observer.observe(document.body, {
+                            childList: true,
+                            subtree: true
+                        });
+                    }
                     
                     // Teste - criar elemento vermelho (com retry se body não existir)
                     function addTestElement() {
@@ -208,12 +215,7 @@ fn main() {
                                 });
                                 
                                 console.log(`[VSync] Set to ${hz} Hz`);
-                                
-                                // Aplicar VSync (placeholder - você implementaria a lógica real aqui)
                                 console.log(`[VSync] Applied ${hz} Hz (placeholder)`);
-                                
-                                // Em um app real, você chamaria uma API do sistema ou configuraria o WebView
-                                // Por enquanto, apenas log para debug
                             });
                         });
                     }
@@ -251,8 +253,6 @@ fn main() {
 
             info!("[TETR.IO Optimizer] ✅ Main window created!");
             info!("[TETR.IO Optimizer] TETR.IO should now be loading...");
-
-            // NÃO abrir DevTools automaticamente - interfere com jogo
 
             Ok(())
         })
