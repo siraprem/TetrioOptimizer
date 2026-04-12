@@ -23,17 +23,27 @@ fn main() {
                 r#"
                 console.log('[TETR.IO Optimizer] Script loaded - waiting for DOM...');
                 
-                // ===== ADBLOCK ULTRA =====
-                const adDomains = [
+                // ===== ADBLOCK INTELIGENTE =====
+                // Bloquear apenas URLs de ANÚNCIOS, não configs do jogo
+                const adKeywords = [
+                    // Google Ads
                     'googleads', 'doubleclick', 'googlesyndication',
+                    // Analytics/Tracking (não essenciais)
                     'analytics', 'telemetry', 'tracking', 'beacon',
+                    // Ad networks
                     'adservice', 'adsystem', 'adserver', 'adnxs',
                     'facebook.com/tr/', 'scorecardresearch', 'quantserve',
                     'amazon-adsystem', 'yieldmo', 'rubiconproject',
-                    'pub.network', 'confiant', 'optimise', 'floors.dev',
-                    'btloader', 'freestar', 'ceriad', 'darkside',
+                    // Anúncios específicos (NÃO bloquear configs do jogo)
+                    '/ads', '/ad/', 'banner', 'sponsor', 'promo',
                     'openx.net', 'casalemedia', 'criteo', '3lift.com',
                     'imasdk.googleapis.com', 'yellowblue.io', 'pubmatic.com'
+                ];
+                
+                // URLs PERMITIDAS (configs do jogo)
+                const allowedUrls = [
+                    '/configs', '/fsdata.json', // Configurações do TETR.IO
+                    'tetr-io' // Configs específicas do jogo
                 ];
                 
                 // Interceptar fetch
