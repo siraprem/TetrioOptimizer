@@ -1,196 +1,56 @@
-# TETR.IO Ultra Optimized Wrapper
+# TETR.IO Optimizer
 
-A high-performance wrapper for TETR.IO with integrated adblocker, VSync configuration, and WebGL optimizations.
+A Tauri application that loads TETR.IO in a webview and injects performance optimization scripts.
 
-## ✨ Features
+## 🚀 Build & Release
 
-### 🛡️ Integrated Adblocker
-- **Automatic ad removal**: Blocks and removes advertising elements from TETR.IO
-- **Request blocking**: Intercepts and blocks requests to advertising domains
-- **Dynamic detection**: Continuously monitors for new ad elements
-- **Performance boost**: Reduces CPU/GPU usage by eliminating ad rendering
+This project uses GitHub Actions for automated builds. When you push a tag starting with `v` (e.g., `v1.0.0`), the workflow will:
 
-### ⚙️ VSync Configuration Wizard
-- **Mandatory setup**: VSync configuration is required before game launch
-- **Standard rates**: Predefined options (60, 75, 120, 144, 165, 240 Hz)
-- **Custom values**: Support for custom refresh rates with safety warnings
-- **Frame rate limiting**: Ensures stable performance matching selected VSync
+1. **Build for Windows** (MSVC) - Creates `.msi` and `.exe` installers
+2. **Build for Linux** - Creates `.deb` and `.AppImage` packages
+3. **Create GitHub Release** with all artifacts
 
-### 🚀 Performance Optimizations
-- **WebGL enhancements**: Optimized rendering pipeline for smoother gameplay
-- **Memory management**: Intelligent cache cleaning and memory optimization
-- **System compatibility**: Cross-platform stability improvements
-- **User-Agent spoofing**: Ensures compatibility with TETR.IO
-
-## 🚀 Installation
-
-### Prerequisites
-- Rust (latest stable)
-- Node.js 18+ (for Tauri dependencies)
-- System dependencies for Tauri (see [Tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites))
-
-### Build from Source
+### Prerequisites for Local Development
 
 ```bash
-# Clone the repository
-git clone https://github.com/siraprem/TetrioOptimizer.git
-cd TetrioOptimizer
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-# Install dependencies
-npm install
+# Install Node.js (v20+)
+# Install Tauri CLI
+npm install @tauri-apps/cli
 
-# Build the application
-cd src-tauri
-cargo build --release
+# Install system dependencies
+# Ubuntu/Debian:
+sudo apt-get update
+sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libayatana-appindicator3-dev librsvg2-dev
 ```
 
-### Development
+### Local Build Commands
 
 ```bash
-# Run in development mode
+# Development
 npm run tauri dev
 
-# Build for production
+# Build for current platform
 npm run tauri build
+
+# Build for specific target
+npm run tauri build -- --target x86_64-pc-windows-msvc
 ```
 
-## 🎮 Usage
+## 📦 Distribution
 
-1. **Launch the application**
-2. **VSync Configuration** (mandatory first step):
-   - Select your monitor's refresh rate from the dropdown
-   - Or enter a custom value (with caution)
-   - Click "Confirm & Launch Game"
+The application is distributed as:
+- **Windows**: `.msi` installer (with WebView2 bootstrapper)
+- **Windows**: `.exe` installer (NSIS)
+- **Linux**: `.deb` package
+- **Linux**: `.AppImage` portable
 
-3. **Game Launch**:
-   - The main TETR.IO window opens with optimal settings
-   - Adblocker automatically activates
-   - VSync is applied for smooth gameplay
+## 🔧 Windows WebView2 Requirements
 
-4. **Performance Controls**:
-   - Use system tray menu for quick actions
-   - Access optimization settings
-   - Monitor system performance
-
-## 🔧 Technical Details
-
-### Adblocker Implementation
-- **Script injection**: JavaScript injected via Tauri's webview API
-- **DOM monitoring**: MutationObserver detects and removes new ad elements
-- **Request interception**: Overrides fetch() and XMLHttpRequest
-- **Selective blocking**: Targets known ad domains and patterns
-
-### VSync System
-- **State management**: Rust backend stores VSync configuration
-- **Frame limiting**: JavaScript-based frame rate control
-- **Window coordination**: Setup window must complete before main window
-- **Validation**: Input validation for safe custom values
-
-### Performance Features
-- **WebGL flags**: Optimized Chrome/WebKit rendering flags
-- **Memory optimization**: Automatic and manual cache management
-- **Platform-specific**: Linux stability improvements
-- **Persistent storage**: Game data saved locally
-
-## 📁 Project Structure
-
-```
-TetrioOptimizer/
-├── src-tauri/
-│   ├── src/
-│   │   ├── main.rs          # Main application logic
-│   │   ├── memory_manager.rs # Memory optimization
-│   │   └── webgl_optimizer.rs # WebGL enhancements
-│   ├── adblocker.js         # Adblocker script
-│   ├── setup.html           # VSync configuration UI
-│   └── build.rs             # Build configuration
-├── tauri.conf.json          # Tauri configuration
-├── Cargo.toml              # Rust dependencies
-├── package.json            # Node.js dependencies
-└── README.md               # This file
-```
-
-## 🛠️ Configuration
-
-### Customizing Adblocker
-Edit `src-tauri/adblocker.js` to:
-- Add/remove ad domains
-- Modify CSS selectors for ad elements
-- Adjust detection sensitivity
-
-### VSync Settings
-Modify `src-tauri/src/main.rs` to:
-- Change default VSync options
-- Adjust frame limiting behavior
-- Modify validation rules
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+The Windows installer includes a WebView2 bootstrapper. If users encounter WebView2 issues, refer to [docs/WINDOWS_TROUBLESHOOTING.md](docs/WINDOWS_TROUBLESHOOTING.md) for troubleshooting steps.
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## ⚠️ Disclaimer
-
-This project is not affiliated with TETR.IO or osk. It is a third-party wrapper that provides additional features and optimizations. Use at your own risk.
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Build fails on Linux:**
-```bash
-# Install required system dependencies
-sudo apt-get update
-sudo apt-get install libwebkit2gtk-4.1-dev \
-    build-essential \
-    curl \
-    wget \
-    libssl-dev \
-    libgtk-3-dev \
-    libayatana-appindicator3-dev \
-    librsvg2-dev
-```
-
-**Adblocker not working:**
-- Check browser console for errors
-- Verify script injection in main.rs
-- Update ad selectors in adblocker.js
-
-**VSync configuration not saving:**
-- Check file permissions for data directory
-- Verify state management in AppState
-- Ensure proper window event handling
-
-### Debug Mode
-
-Enable detailed logging:
-```bash
-RUST_LOG=debug npm run tauri dev
-```
-
-## 🔄 Changelog
-
-### v0.2.0 (Current)
-- Added integrated adblocker
-- Implemented VSync configuration wizard
-- Improved window management
-- Enhanced performance optimizations
-- Added custom VSync value support
-
-### v0.1.0
-- Initial release
-- Basic TETR.IO wrapper
-- WebGL optimizations
-- Memory management
-- Cross-platform support
-
-## 📞 Support
-
-For issues and feature requests, please use the [GitHub Issues](https://github.com/siraprem/TetrioOptimizer/issues) page.
+MIT
