@@ -63,7 +63,7 @@
         "allowToChangeInstallationDirectory": true,
         "createDesktopShortcut": true,
         "createStartMenuShortcut": true,
-        "menuCategory": true
+        "menuCategory": false
       }
     }
   },
