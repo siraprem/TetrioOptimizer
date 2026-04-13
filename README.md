@@ -1,56 +1,58 @@
 # TETR.IO Optimizer
 
-A Tauri application that loads TETR.IO in a webview and injects performance optimization scripts.
+Um wrapper desktop para TETR.IO que carrega o jogo em uma webview e injeta scripts de otimização de performance. Construído com Tauri para Windows e Linux.
 
-## 🚀 Build & Release
+## O que faz
 
-This project uses GitHub Actions for automated builds. When you push a tag starting with `v` (e.g., `v1.0.0`), the workflow will:
+- Abre o TETR.IO em uma janela dedicada
+- Injeta scripts para otimizar performance
+- Corrige limite de FPS para 60Hz
+- Funciona offline após o carregamento inicial
 
-1. **Build for Windows** (MSVC) - Creates `.msi` and `.exe` installers
-2. **Build for Linux** - Creates `.deb` and `.AppImage` packages
-3. **Create GitHub Release** with all artifacts
+## Compilando a partir do código fonte
 
-### Prerequisites for Local Development
+### Pré-requisitos
 
-```bash
-# Install Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+- Rust (última versão estável)
+- Node.js 20+
+- Tauri CLI
 
-# Install Node.js (v20+)
-# Install Tauri CLI
-npm install @tauri-apps/cli
-
-# Install system dependencies
-# Ubuntu/Debian:
-sudo apt-get update
-sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libayatana-appindicator3-dev librsvg2-dev
-```
-
-### Local Build Commands
+### Configuração
 
 ```bash
-# Development
+# Clone o repositório
+git clone https://github.com/siraprem/TetrioOptimizer
+cd TetrioOptimizer
+
+# Instale as dependências
+npm install
+
+# Execute em modo de desenvolvimento
 npm run tauri dev
 
-# Build for current platform
+# Compile para sua plataforma
 npm run tauri build
-
-# Build for specific target
-npm run tauri build -- --target x86_64-pc-windows-msvc
 ```
 
-## 📦 Distribution
+## Builds automatizados
 
-The application is distributed as:
-- **Windows**: `.msi` installer (with WebView2 bootstrapper)
-- **Windows**: `.exe` installer (NSIS)
-- **Linux**: `.deb` package
-- **Linux**: `.AppImage` portable
+Este projeto usa GitHub Actions para builds automatizados. Quando você faz push de uma tag começando com `v` (como `v1.0.0`), o workflow irá:
 
-## 🔧 Windows WebView2 Requirements
+1. Compilar para Windows (cria instaladores .msi e .exe)
+2. Compilar para Linux (cria pacotes .deb e .AppImage)
+3. Criar um Release no GitHub com todos os artifacts
 
-The Windows installer includes a WebView2 bootstrapper. If users encounter WebView2 issues, refer to [docs/WINDOWS_TROUBLESHOOTING.md](docs/WINDOWS_TROUBLESHOOTING.md) for troubleshooting steps.
+## Requisito WebView2 no Windows
 
-## 📄 License
+A versão Windows requer WebView2 Runtime. O instalador inclui um bootstrapper que irá instalá-lo automaticamente se necessário. Se você encontrar problemas com WebView2, consulte o guia de troubleshooting em `docs/WINDOWS_TROUBLESHOOTING.md`.
 
-MIT
+## Formatos de distribuição
+
+- **Windows**: instalador .msi (com bootstrapper WebView2)
+- **Windows**: instalador .exe (NSIS)
+- **Linux**: pacote .deb
+- **Linux**: portable .AppImage
+
+## Licença
+
+MIT License
