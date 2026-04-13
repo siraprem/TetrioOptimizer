@@ -40,10 +40,13 @@ jobs:
       run: npm ci
 
     - name: Build Tauri App (Windows)
-      run: npm run tauri build
+      run: cargo tauri build
       env:
         TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
         TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+
+    - name: Move WebView2 DLL (Windows)
+      run: python move-dll.py
 
     - name: Upload Windows artifacts
       uses: actions/upload-artifact@v4
@@ -87,7 +90,7 @@ jobs:
       run: npm ci
 
     - name: Build Tauri App (Linux)
-      run: npm run tauri build
+      run: cargo tauri build
       env:
         TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
         TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
