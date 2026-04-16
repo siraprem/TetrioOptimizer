@@ -1,58 +1,108 @@
-# TETR.IO Optimizer
+[English version available here](./README_EN.md)
 
-Um wrapper desktop para TETR.IO que carrega o jogo em uma webview e injeta scripts de otimização de performance. Construído com Tauri para Windows e Linux.
+# TETR.IO Optimizer - Performance Absurda no Desktop
 
-## O que faz
+Um wrapper desktop feito em Tauri que roda o TETR.IO com otimizações de performance que o navegador normal não tem. Basicamente é o TETR.IO, mas mais rápido, mais leve e sem aquelas travadas chatas.
 
-- Abre o TETR.IO em uma janela dedicada
-- Injeta scripts para otimizar performance
-- Corrige limite de FPS para 60Hz
-- Funciona offline após o carregamento inicial
+## O que é isso?
 
-## Compilando a partir do código fonte
+Sabe o TETR.IO, aquele jogo de Tetris online que todo mundo joga no navegador? Pois é, esse projeto é uma tentativa de fazer um app desktop que roda o jogo direto, mas com um monte de truques por baixo dos panos pra deixar tudo mais fluido.
+
+## Funcionalidades
+
+- **Aceleração de GPU Nativa:** Configurações específicas pra drivers Mesa (AMD/Intel) no Linux. A placa de vídeo trabalha de verdade.
+- **V-Sync Bypass:** Desativação do vblank no nível do kernel pra resposta instantânea. Sem delay entre o seu comando e a peça se mover.
+- **Otimização Passiva de DOM:** Injeção de CSS que remove efeitos pesados do TETR.IO sem interferir na lógica do jogo (Safe pra sua conta!).
+- **Tauri 2.0 Engine:** Ocupa menos RAM e CPU que o cliente oficial ou o navegador aberto. É magia, mas com código.
+- **Build Cross-Platform:** Roda no Linux e gera executável pra Windows direto do Arch. Sem VM, sem dor de cabeça.
+
+## Qual versão baixar?
+
+A gente tem duas branches principais agora. O projeto evoluiu e a estrutura permite escolher entre estabilidade e performance bruta:
+
+### Versão Main (Estabilidade) - **RECOMENDADA PRA MAIORIA**
+Essa é a versão onde a mágica acontece de forma controlada. Ela usa todas as otimizações mas mantém o FPS limitado a 60Hz pra evitar problemas.
+
+- **Foco:** Performance otimizada com estabilidade garantida.
+- **Otimizações:** Aceleração GPU, bypass de V-Sync, otimizações de DOM.
+- **Para quem:** Todo mundo que quer jogar sem travadas mas sem surpresas.
+
+### Versão Performance-Uncapped
+Essa versão é o nosso "modo turbo". Tira todos os limites de FPS e desativa tudo que puder pra performance máxima.
+
+- **Foco:** FPS ilimitado pra monitores de alta taxa (144Hz+).
+- **Otimizações:** Tudo da Main + `--disable-frame-rate-limit` + `vblank_mode=0` agressivo.
+- **Para quem:** Quem tem monitor gamer e quer cada frame possível.
+
+**Dica:** Se você não sabe o que é refresh rate ou não tem monitor acima de 60Hz, fica na Main que é sucesso.
+
+## Como baixar
+
+Pra baixar o aplicativo, acesse nossa página de lançamentos:
+
+**[Clique aqui pra ver todas as versões (Releases)](https://github.com/siraprem/TetrioOptimizer/releases)**
+
+**Dica de ouro:** Escolhe entre a normal (main) e uncapped. se tiver duvidas escolha normal.
+
+## Como rodar e buildar
 
 ### Pré-requisitos
-
 - Rust (última versão estável)
 - Node.js 20+
-- Tauri CLI
+- Tauri CLI (`npm install -g @tauri-apps/cli`)
 
-### Configuração
-
+### Build no Linux (pra Linux)
 ```bash
-# Clone o repositório
-git clone https://github.com/siraprem/TetrioOptimizer
+# Baixa o código
+git clone https://github.com/siraprem/TetrioOptimizer.git
 cd TetrioOptimizer
 
-# Instale as dependências
+# Instala as dependências
 npm install
 
-# Execute em modo de desenvolvimento
-npm run tauri dev
+# Build normal (Main branch)
+npm run tauri build
 
-# Compile para sua plataforma
+# Ou se quiser a versão turbo:
+git checkout performance-uncapped
 npm run tauri build
 ```
 
-## Builds automatizados
+### Build pra Windows (direto do Arch)
+```bash
+# Instala o target Windows
+rustup target add x86_64-pc-windows-gnu
 
-Este projeto usa GitHub Actions para builds automatizados. Quando você faz push de uma tag começando com `v` (como `v1.0.0`), o workflow irá:
+# Instala o linker Mingw (no Arch)
+sudo pacman -S mingw-w64-gcc
 
-1. Compilar para Windows (cria instaladores .msi e .exe)
-2. Compilar para Linux (cria pacotes .deb e .AppImage)
-3. Criar um Release no GitHub com todos os artifacts
+# Build cross-compile
+npx tauri build --target x86_64-pc-windows-gnu
+```
 
-Nota: O build ta quebrado nem tentem usar, é mais um placeholder pra no futuro arrumar algum dia (hoje nem perto)
+O executável Windows vai aparecer em `target/x86_64-pc-windows-gnu/release/tetrio-optimizer.exe`.
 
-## Requisito WebView2 no Windows
+## Desenvolvimento Assistido
 
-A versão Windows requer WebView2 Runtime. O instalador inclui um bootstrapper que irá instalá-lo automaticamente se necessário. Se você encontrar problemas com WebView2, consulte o guia de troubleshooting em `docs/WINDOWS_TROUBLESHOOTING.md`. (o troubleshooting ainda ta se fazendo calma la kkk)
+O TETR.IO Optimizer utiliza um fluxo de desenvolvimento AI-Augmented (Desenvolvimento Aumentado por IA). Isso permite que eu, como desenvolvedora, foque na arquitetura e na experiência do usuário, enquanto utilizo modelos de linguagem avançados para otimizar a implementação, diagnosticar problemas de performance e acelerar a resolução de bugs específicos de plataforma.
 
-## Formatos de distribuição
+## Estrutura do projeto
 
-- **Windows**: Aplicativo .exe
-- **Linux**: Executavel
+```
+TetrioOptimizer/
+├── src-tauri/          # Código Rust do Tauri (onde a mágica acontece)
+├── public/             # Scripts de otimização que são injetados
+├── .cargo/             # Configurações de cross-compile
+├── package.json        # Dependências do Node
+└── README.md           # Esse arquivo aqui
+```
 
 ## Licença
 
-MIT License
+**MIT** - basicamente pode fazer o que quiser com o código, só não me processa por favor, recomendo ler o LICENSE.md 
+
+## Aviso legal
+
+**Isso aqui é um projeto não-oficial.** O TETR.IO é dos criadores originais. Esse app não tem nenhuma afiliação com a equipe do TETR.IO, é só um wrapper feito por fã pra fã. Não me deem strike, eu amo o jogo.
+
+Se puder, apoia o osk (dev do jogo) lá no site oficial! O cara mantém os servidores com anúncios e doações.
