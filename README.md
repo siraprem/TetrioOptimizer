@@ -42,16 +42,16 @@ Este projeto usa GitHub Actions para builds automatizados. Quando você faz push
 2. Compilar para Linux (cria pacotes .deb e .AppImage)
 3. Criar um Release no GitHub com todos os artifacts
 
+Nota: O build ta quebrado nem tentem usar, é mais um placeholder pra no futuro arrumar algum dia (hoje nem perto)
+
 ## Requisito WebView2 no Windows
 
-A versão Windows requer WebView2 Runtime. O instalador inclui um bootstrapper que irá instalá-lo automaticamente se necessário. Se você encontrar problemas com WebView2, consulte o guia de troubleshooting em `docs/WINDOWS_TROUBLESHOOTING.md`.
+A versão Windows requer WebView2 Runtime. O instalador inclui um bootstrapper que irá instalá-lo automaticamente se necessário. Se você encontrar problemas com WebView2, consulte o guia de troubleshooting em `docs/WINDOWS_TROUBLESHOOTING.md`. (o troubleshooting ainda ta se fazendo calma la kkk)
 
 ## Formatos de distribuição
 
-- **Windows**: instalador .msi (com bootstrapper WebView2)
-- **Windows**: instalador .exe (NSIS)
-- **Linux**: pacote .deb
-- **Linux**: portable .AppImage
+- **Windows**: Aplicativo .exe
+- **Linux**: Executavel
 
 ## Licença
 
