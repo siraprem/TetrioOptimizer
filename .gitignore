@@ -30,3 +30,6 @@ Cargo.lock
 
 # Logs
 *.log
+
+# AGENTS.md - Protocol file for AI agents
+AGENTS.md
