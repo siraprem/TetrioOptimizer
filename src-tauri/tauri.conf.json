@@ -1,14 +1,63 @@
 {
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "tetrio-optimizer",
   "version": "0.2.0",
   "identifier": "com.tetrio.optimizer",
   "build": {
     "devUrl": "https://tetr.io",
     "beforeDevCommand": "",
-    "beforeBuildCommand": ""
+    "beforeBuildCommand": "",
+    "frontendDist": "../public"
   },
   "app": {
-    "withGlobalTauri": false,
-    "windows": []
+    "withGlobalTauri": true,
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "label": "main",
+        "title": "TETR.IO Optimizer",
+        "width": 1280,
+        "height": 720,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true,
+        "visible": true,
+        "url": "https://tetr.io",
+        "devtools": true,
+        "additionalBrowserArgs": "--ignore-gpu-blocklist --enable-gpu-rasterization --enable-accelerated-2d-canvas"
+      }
+    ]
+  },
+  "bundle": {
+    "active": false,
+    "targets": [],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": ["resources/WebView2Loader.dll"],
+    "externalBin": [],
+    "copyright": "MIT License",
+    "category": "Utility",
+    "shortDescription": "Performance enhancements for TETR.IO",
+    "longDescription": "TETR.IO Optimizer provides performance enhancements and FPS optimization for TETR.IO",
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "",
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      }
+    }
+  },
+  "plugins": {
+    "window": {
+      "defaultWindowIcon": null
+    }
   }
 }

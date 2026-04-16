@@ -1,37 +1,27 @@
-use tauri::{WebviewUrl, WebviewWindowBuilder};
+use tauri::Manager;
 
 fn main() {
-    println!("[TETR.IO Optimizer] Starting...");
-    
+    #[cfg(target_os = "linux")]
+    {
+        std::env::set_var("WEBKIT_DISABLE_COMPOSITING_MODE", "0");
+        std::env::set_var("WEBKIT_FORCE_COMPOSITING_MODE", "1");
+    }
+
     tauri::Builder::default()
         .setup(|app| {
-            let window = WebviewWindowBuilder::new(
-                app,
-                "main",
-                WebviewUrl::External("https://tetr.io".parse().unwrap()),
-            )
-            .title("TETR.IO Optimizer")
-            .inner_size(1280.0, 720.0)
-            .min_inner_size(800.0, 600.0)
-            .build()?;
-            
-            println!("[TETR.IO Optimizer] ✅ Main window created!");
-            
-            // Inject the optimizer script after the window loads
-            let window_ = window.clone();
-            window.on_webview_ready(move |_| {
-                println!("[TETR.IO Optimizer] TETR.IO should now be loading...");
-                
-                // Wait a bit for the page to load, then inject our script
-                std::thread::sleep(std::time::Duration::from_millis(2000));
-                
-                if let Err(e) = window_.eval(include_str!("../adblocker.js")) {
-                    eprintln!("[TETR.IO Optimizer] Failed to inject script: {}", e);
-                } else {
-                    println!("[TETR.IO Optimizer] ✅ Optimizer script injected!");
-                }
+            // Obter a janela principal que já existe
+            let _window = app
+                .get_webview_window("main")
+                .expect("no main window found");
+
+            // Injetar script após um delay
+            let window_clone = _window.clone();
+            std::thread::spawn(move || {
+                std::thread::sleep(std::time::Duration::from_secs(3));
+                let _ = window_clone.eval(include_str!("../../public/optimizer.js"));
+                println!("[TETR.IO Optimizer] ✅ Performance Scripts Injected");
             });
-            
+
             Ok(())
         })
         .run(tauri::generate_context!())
