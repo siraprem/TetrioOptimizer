@@ -1,57 +1,29 @@
 (function() {
-    console.log('%c TETR.IO Optimizer: Otimização Passiva Ativa ', 'background: #222; color: #bada55');
+    console.log('%c TETR.IO Optimizer: Performance Real Ativa ', 'background: #222; color: #bada55');
     
-    // Otimizações de DOM/CSS (sem interceptar renderização)
-    function applyDOMOptimizations() {
-        // 1. Forçar aceleração GPU em elementos visuais
+    // Apenas otimização comprovada: qualidade de imagem no scaling
+    function applyImageOptimization() {
         const style = document.createElement('style');
         style.textContent = `
-            canvas, .game-canvas, #game {
-                transform: translateZ(0);
-                backface-visibility: hidden;
-                -webkit-backface-visibility: hidden;
-                image-rendering: -webkit-optimize-contrast;
+            /* Garantir nitidez visual no scaling do WebView */
+            canvas, #game {
                 image-rendering: pixelated;
-            }
-            
-            /* Otimizar partículas e efeitos visuais */
-            .particle, .effect, .trail {
-                will-change: transform, opacity;
-            }
-            
-            /* Desativar animações pesadas em background */
-            body, html {
-                overflow: hidden !important;
+                image-rendering: -webkit-optimize-contrast;
             }
         `;
         document.head.appendChild(style);
         
-        // 2. Remover listeners de eventos pesados se existirem
-        setTimeout(() => {
-            // Limpar event listeners desnecessários
-            const heavyEvents = ['mousemove', 'scroll', 'resize'];
-            heavyEvents.forEach(event => {
-                window.addEventListener(event, (e) => {
-                    e.stopImmediatePropagation();
-                }, { capture: true, passive: true });
-            });
-        }, 1000);
-        
-        // 3. Otimizar requestAnimationFrame nativo (sem interceptar)
-        if (window.requestAnimationFrame) {
-            // Apenas garantir que está usando o nativo
-            console.log('[TETR.IO Optimizer] ✅ Usando RAF nativo do navegador');
-        }
+        console.log('[TETR.IO Optimizer] ✅ Otimização de Imagem Aplicada');
     }
     
-    // Aplicar otimizações após carregamento
+    // Aplicar otimização após carregamento
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', applyDOMOptimizations);
+        document.addEventListener('DOMContentLoaded', applyImageOptimization);
     } else {
-        applyDOMOptimizations();
+        applyImageOptimization();
     }
     
-    // Monitorar performance (apenas logging)
+    // Monitoramento real de FPS (apenas logging)
     let frameCount = 0;
     let lastLog = performance.now();
     
@@ -61,7 +33,7 @@
         
         if (now - lastLog > 1000) { // Log a cada 1 segundo
             const fps = Math.round((frameCount * 1000) / (now - lastLog));
-            console.log(`[TETR.IO Optimizer] 📊 FPS: ${fps} (Monitoramento Passivo)`);
+            console.log(`[TETR.IO Optimizer] 📊 FPS: ${fps}`);
             frameCount = 0;
             lastLog = now;
         }
@@ -69,8 +41,8 @@
         requestAnimationFrame(monitorPerformance);
     }
     
-    // Iniciar monitoramento após 5 segundos
+    // Iniciar monitoramento após 3 segundos
     setTimeout(() => {
         requestAnimationFrame(monitorPerformance);
-    }, 5000);
+    }, 3000);
 })();
