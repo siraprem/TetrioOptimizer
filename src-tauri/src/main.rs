@@ -5,6 +5,13 @@ fn main() {
     {
         std::env::set_var("WEBKIT_DISABLE_COMPOSITING_MODE", "0");
         std::env::set_var("WEBKIT_FORCE_COMPOSITING_MODE", "1");
+        std::env::set_var("vblank_mode", "0");
+    }
+    
+    // Configuração para Windows também
+    #[cfg(target_os = "windows")]
+    {
+        std::env::set_var("vblank_mode", "0");
     }
 
     tauri::Builder::default()

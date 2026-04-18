@@ -26,7 +26,7 @@
         "visible": true,
         "url": "https://tetr.io",
         "devtools": true,
-        "additionalBrowserArgs": "--ignore-gpu-blocklist --enable-gpu-rasterization --enable-accelerated-2d-canvas"
+        "additionalBrowserArgs": "--ignore-gpu-blocklist --enable-gpu-rasterization --enable-accelerated-2d-canvas --disable-frame-rate-limit"
       }
     ]
   },
