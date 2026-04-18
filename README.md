@@ -11,8 +11,6 @@ Sabe o TETR.IO, aquele jogo de Tetris online que todo mundo joga no navegador? P
 ## Funcionalidades
 
 - **Aceleração de GPU Nativa:** Configurações específicas pra drivers Mesa (AMD/Intel) no Linux. A placa de vídeo trabalha de verdade.
-- **V-Sync Bypass:** Desativação do vblank no nível do kernel pra resposta instantânea. Sem delay entre o seu comando e a peça se mover.
-- **Otimização Passiva de DOM:** Injeção de CSS que remove efeitos pesados do TETR.IO sem interferir na lógica do jogo (Safe pra sua conta!).
 - **Tauri 2.0 Engine:** Ocupa menos RAM e CPU que o cliente oficial ou o navegador aberto. É magia, mas com código.
 - **Build Cross-Platform:** Roda no Linux e gera executável pra Windows direto do Arch. Sem VM, sem dor de cabeça.
 
